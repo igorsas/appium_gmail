@@ -33,7 +33,7 @@ public class DriverProvider {
         driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT, TimeUnit.SECONDS);
     }
 
-    private static void setCapabilities(){
+    private static void setCapabilities() {
         capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "8.0");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator-5554");
@@ -42,7 +42,6 @@ public class DriverProvider {
         capabilities.setCapability("appActivity", Property.getProperty("activity"));
         capabilities.setCapability("unicodeKeyboard", "true");
         capabilities.setCapability("resetKeyboard", "true");
-//        capabilities.setCapability("appWaitActivity", Property.getProperty("activity"));
     }
 
     public static void quit() {
