@@ -1,13 +1,23 @@
 package com.igor.listener;
 
+import com.igor.utils.provider.DriverProvider;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-public class LoggerListener implements ITestListener {
-	private static Logger LOGGER = LogManager.getLogger(LoggerListener.class);
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class TestNGListener implements ITestListener {
+	private static Logger LOGGER = LogManager.getLogger(TestNGListener.class);
 
 	@Override
 	public void onTestStart(ITestResult result) {
@@ -23,7 +33,27 @@ public class LoggerListener implements ITestListener {
 
 	@Override
 	public void onTestFailure(ITestResult result) {
-		LOGGER.warn(String.format("Test : %s , Method : %s failed in", result.getName(), result.getMethod()));
+		try {
+			LOGGER.warn(String.format("Test : %s , Method : %s failed in", result.getName(), result.getMethod()));
+			File screenshot = ((TakesScreenshot) DriverProvider.getDriver()).getScreenshotAs(OutputType.FILE);
+			String screenshotName = getFileName();
+			String path = getPath(screenshotName);
+			FileUtils.copyFile(screenshot, new File(path));
+			LOGGER.info("<br><img src=" + screenshotName + " height='355' width='200'/><br>");
+
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		}
+	}
+
+	private String getFileName() {
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy_hh.mm.ss");
+		Date date = new Date();
+		return dateFormat.format(date) + "Thread" + Thread.currentThread() + "_" + "screenshot" + ".png";
+	}
+
+	private String getPath(String name) {
+		return "target\\surefire-reports\\html\\" + name;
 	}
 
 	@Override

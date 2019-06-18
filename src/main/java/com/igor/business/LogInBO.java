@@ -29,8 +29,8 @@ public class LogInBO {
             loginActivity.setPassword(password);
             LOGGER.info("agreeing with all their rules");
             loginActivity.clickOk();
-            LOGGER.info("go to inbox");
         }
+        LOGGER.info("go to inbox");
         welcomeActivity.clickOnGoToMailButton();
     }
 }

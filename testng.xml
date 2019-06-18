@@ -8,6 +8,5 @@
     </test>
     <listeners>
         <listener class-name="org.uncommons.reportng.HTMLReporter" />
-        <listener class-name="com.igor.listener.LoggerListener"/>
     </listeners>
 </suite>
