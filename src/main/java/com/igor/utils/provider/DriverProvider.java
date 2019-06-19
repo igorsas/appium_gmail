@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static com.igor.utils.constant.Constants.IMPLICIT_WAIT;
-
 public class DriverProvider {
     private static ThreadLocal<AndroidDriver<MobileElement>> DRIVER_POOL = new ThreadLocal<>();
     private static ThreadLocal<DesiredCapabilities> CAPABILITIES_POOL = new ThreadLocal<>();
@@ -25,7 +23,7 @@ public class DriverProvider {
     private DriverProvider() {
     }
 
-    public static AndroidDriver<MobileElement> getDriver() throws MalformedURLException {
+    public static synchronized AndroidDriver<MobileElement> getDriver() throws MalformedURLException {
         if (Objects.isNull(DRIVER_POOL.get())) {
             if(Objects.isNull(devices)){
                 devices = new ArrayList<>();
@@ -38,8 +36,8 @@ public class DriverProvider {
     }
 
     private static void initializeDriver() throws MalformedURLException {
-        DRIVER_POOL.set(new AndroidDriver<>(new URL("http://0.0.0.0:4723/wd/hub"), CAPABILITIES_POOL.get()));
-        DRIVER_POOL.get().manage().timeouts().implicitlyWait(IMPLICIT_WAIT, TimeUnit.SECONDS);
+        DRIVER_POOL.set(new AndroidDriver<>(new URL(Property.getProperty("url")), CAPABILITIES_POOL.get()));
+        DRIVER_POOL.get().manage().timeouts().implicitlyWait(Long.parseLong(Property.getProperty("wait")), TimeUnit.SECONDS);
     }
 
     private static void setCapabilities() {
@@ -47,8 +45,8 @@ public class DriverProvider {
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Property.getProperty("platform"));
         capabilities.setCapability("appPackage", Property.getProperty("path"));
         capabilities.setCapability("appActivity", Property.getProperty("activity"));
-        capabilities.setCapability("unicodeKeyboard", "true");
-        capabilities.setCapability("resetKeyboard", "true");
+        capabilities.setCapability("unicodeKeyboard", Property.getProperty("unicodeKeyboard"));
+        capabilities.setCapability("resetKeyboard", Property.getProperty("resetKeyboard"));
         setCapabiliesForNewDevice(capabilities);
         CAPABILITIES_POOL.set(capabilities);
     }

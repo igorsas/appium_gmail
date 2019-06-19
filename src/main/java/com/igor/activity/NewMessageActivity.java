@@ -3,7 +3,6 @@ package com.igor.activity;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import org.openqa.selenium.Keys;
 
 public class NewMessageActivity extends BaseActivity {
     @AndroidFindBy(id = "to")
