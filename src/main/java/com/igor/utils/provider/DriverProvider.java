@@ -5,6 +5,7 @@ import com.igor.utils.property.Property;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.apache.log4j.LogManager;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
@@ -26,7 +27,9 @@ public class DriverProvider {
 
     public static AndroidDriver<MobileElement> getDriver() throws MalformedURLException {
         if (Objects.isNull(DRIVER_POOL.get())) {
-            devices = new ArrayList<Long>();
+            if(Objects.isNull(devices)){
+                devices = new ArrayList<>();
+            }
             devices.add(Thread.currentThread().getId());
             setCapabilities();
             initializeDriver();
@@ -51,14 +54,10 @@ public class DriverProvider {
     }
 
     private static void setCapabiliesForNewDevice(DesiredCapabilities capabilities){
-        String name, version;
-        if(Thread.currentThread().getId() == devices.get(0)){
-            name = JsonParser.getDeviceName(0);
-            version = JsonParser.getDeviceVersion(0);
-        }else {
-            name = JsonParser.getDeviceName(1);
-            version = JsonParser.getDeviceVersion(1);
-        }
+        int index = devices.indexOf(Thread.currentThread().getId());
+        LogManager.getLogger(DriverProvider.class).info("INDEX OF CURRENT THREAD ID: " + index);
+        String name = JsonParser.getDeviceName(index);
+        String version = JsonParser.getDeviceVersion(index);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, version);
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, name);
     }

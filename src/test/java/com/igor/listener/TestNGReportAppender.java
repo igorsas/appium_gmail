@@ -3,6 +3,7 @@ package com.igor.listener;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
+import org.openqa.selenium.Keys;
 import org.testng.Reporter;
 
 public class TestNGReportAppender extends AppenderSkeleton {
@@ -19,7 +20,7 @@ public class TestNGReportAppender extends AppenderSkeleton {
             final String[] s = event.getThrowableStrRep();
             if (s != null) {
                 for (final String value : s) {
-                    result.append(value).append(Layout.LINE_SEP);
+                    result.append(value).append(Layout.LINE_SEP).append(Keys.ENTER);
                 }
             }
         }
